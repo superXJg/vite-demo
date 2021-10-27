@@ -8,18 +8,22 @@ import routes from '@/routes'
 import menu from './menu'
 import SiderMenu from '@/components/SiderMenu'
 import React from 'react'
+import logo from '../logo.svg'
 const BaseLayout = (props: any) => {
-    React.useEffect(() => {
-        console.log('props', props)
-    }, [])
+    const menuCallback = (args: any) => {
+        console.log('args', args)
+        const { key } = args
+    }
     return (
         <Layout>
             <Header className="header">
-                <div className={styles.logo} />
+                <div className={styles.logo}>
+                    <img src={logo} className="App-logo" alt="logo" />
+                </div>
             </Header>
             <Layout>
                 <Sider width={200} className="site-layout-background">
-                    <SiderMenu menus={menu} />
+                    <SiderMenu location={props.location} menus={menu} handle={menuCallback} />
                 </Sider>
                 <Layout style={{ padding: '0 24px 24px' }}>
                     {/* <Breadcrumb style={{ margin: '16px 0' }}>
@@ -36,6 +40,7 @@ const BaseLayout = (props: any) => {
                             minHeight: 280
                         }}>
                         <Switch>
+                            <Redirect from="/" exact to="/home/topics" />
                             {routes.map((item: any) => {
                                 return (
                                     <Route
@@ -45,16 +50,15 @@ const BaseLayout = (props: any) => {
                                         render={(props) => {
                                             console.log('props')
                                             return props ? (
-                                                <item.component {...props} />
+                                                <item.component routes={routes} {...props} />
                                             ) : (
                                                 // 这里也可以跳转到 403 页面
-                                                // <Redirect to="/404" {...props} />
-                                                <div>无组件数据</div>
+                                                <Redirect to="/403" {...props} />
                                             )
                                         }}></Route>
                                 )
                             })}
-                            <Redirect to="/404" />
+                            <Redirect to="/404"></Redirect>
                         </Switch>
                     </Content>
                 </Layout>
